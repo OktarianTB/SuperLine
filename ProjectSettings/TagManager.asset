@@ -38,9 +38,12 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Player
-    uniqueID: 2307633705
-    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Player Trail
+    uniqueID: 3210445547
+    locked: 0
+  - name: Player
+    uniqueID: 2307633705
     locked: 0

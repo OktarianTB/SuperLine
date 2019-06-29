@@ -5,6 +5,8 @@ using UnityEngine;
 public class Star : MonoBehaviour
 {
 
+    public GameObject starBurst;
+
     GameManager gameManager;
 
     private void Start()
@@ -24,6 +26,7 @@ public class Star : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         gameManager.numberOfStars--;
+        Instantiate(starBurst, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 
