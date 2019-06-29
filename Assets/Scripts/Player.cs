@@ -6,6 +6,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     new Rigidbody2D rigidbody;
+    public bool gameHasStarted = false;
 
     void Start()
     {
@@ -27,6 +28,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             rigidbody.bodyType = RigidbodyType2D.Dynamic;
+            gameHasStarted = true;
         }
     }
 }

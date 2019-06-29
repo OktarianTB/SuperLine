@@ -14,19 +14,29 @@ public class LineManager : MonoBehaviour
     float halfHeight;
     float halfWidth;
 
+    List<GameObject> lines;
     Line activeLine;
+    Player player;
 
     void Start()
     {
         halfHeight = Camera.main.orthographicSize;
         halfWidth = halfHeight * Camera.main.aspect;
+
+        lines = new List<GameObject>();
+
+        player = FindObjectOfType<Player>();
+        if (!player)
+        {
+            Debug.LogWarning("Player hasn't been found");
+        }
     }
 
     void Update()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (IsValidMousePosition(mousePosition))
+        if(IsValidMousePosition(mousePosition) && !player.gameHasStarted)
         {
             ManageInput(mousePosition);
         }
@@ -48,17 +58,24 @@ public class LineManager : MonoBehaviour
             StopDrawing();
         }
 
+        DrawLine(position);
+
+    }
+
+    private void DrawLine(Vector2 position)
+    {
         if (activeLine != null)
         {
-           activeLine.UpdateLine(position);
+            activeLine.UpdateLine(position);
         }
-
     }
 
     private void StartDrawing()
     {
         GameObject linePrefab = isNormalLine ? normalLinePrefab : boostLinePrefab;
         GameObject line = Instantiate(linePrefab);
+        lines.Add(line);
+
         activeLine = line.GetComponent<Line>();
         currentlyDrawingALine = true;
     }
@@ -85,5 +102,17 @@ public class LineManager : MonoBehaviour
         }
     }
 
+    public void RemoveLastLine()
+    {
+        if(lines.Count < 1 || player.gameHasStarted)
+        {
+            return;
+        }
+
+        GameObject lineToBeRemoved = lines[lines.Count - 1];
+        lines.Remove(lineToBeRemoved);
+        Destroy(lineToBeRemoved);
+        
+    }
 
 }
