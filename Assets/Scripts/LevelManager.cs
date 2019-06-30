@@ -9,6 +9,13 @@ public class LevelManager : MonoBehaviour
     public void LoadNextLevel()
     {
         int currentIndex = SceneManager.GetActiveScene().buildIndex;
+        int numberOfScenes = SceneManager.sceneCountInBuildSettings;
+        
+        if(currentIndex + 1 >= numberOfScenes){
+            LoadMenu();
+            return;
+        }
+
         SceneManager.LoadScene(currentIndex + 1);
     }
 
@@ -21,6 +28,16 @@ public class LevelManager : MonoBehaviour
     public void LoadMenu()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void LoadLevel(int level)
+    {
+        int numberOfScenes = SceneManager.sceneCountInBuildSettings;
+
+        if(level < numberOfScenes)
+        {
+            SceneManager.LoadScene(level);
+        }
     }
 
 }

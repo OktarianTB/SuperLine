@@ -6,7 +6,9 @@ using System;
 
 public class Line : MonoBehaviour
 {
-    private float minDistance = 0.1f;
+    float minDistance = 0.1f;
+    public float boostSpeed = 8f;
+
     public LineRenderer lineRenderer;
     public EdgeCollider2D edgeCollider;
 
@@ -19,6 +21,7 @@ public class Line : MonoBehaviour
 
     List<Vector2> points;
     LineManager lineManager;
+    SurfaceEffector2D surfaceEffector;
 
     public void UpdateLine(Vector2 mousePosition)
     {
@@ -42,11 +45,31 @@ public class Line : MonoBehaviour
         lineRenderer.positionCount = points.Count;
         lineRenderer.SetPosition(points.Count - 1, point);
 
+        if(points.Count == 2 && lineType == LineType.Boost)
+        {
+            ManageBoostDirection();
+        }
+
         ManageCapacity();
 
         if (points.Count > 1)
         {
             edgeCollider.points = points.ToArray();
+        }
+
+    }
+
+    private void ManageBoostDirection() //Depending on initial direction of the drawing, the boost direction needs to be changed accordingly
+    {
+        surfaceEffector = GetComponent<SurfaceEffector2D>();
+
+        if(points[0].x < points[1].x)
+        {
+            surfaceEffector.speed = boostSpeed;
+        }
+        else
+        {
+            surfaceEffector.speed = -boostSpeed;
         }
 
     }

@@ -6,11 +6,13 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public GameObject pausePanel;
+    public GameObject winPanel;
     public bool playerHasWon = false;
     public int numberOfStars;
 
     bool gameIsPaused = false;
     float timeToReset = 1.2f;
+    float timeToLoadPanel = 1f;
 
     GameObject pausePanelInstance;
     LevelManager levelManager;
@@ -33,6 +35,15 @@ public class GameManager : MonoBehaviour
         {
             pausePanel.SetActive(false);
         }
+
+        if (!winPanel)
+        {
+            Debug.LogWarning("Pause Panel is missing");
+        }
+        else
+        {
+            winPanel.SetActive(false);
+        }
     }
 
     private void Update()
@@ -48,8 +59,15 @@ public class GameManager : MonoBehaviour
         if(numberOfStars <= 0)
         {
             playerHasWon = true;
-            print("Win");
+            StartCoroutine(LoadWinPanel());
         }
+    }
+
+    IEnumerator LoadWinPanel()
+    {
+        yield return new WaitForSeconds(timeToLoadPanel);
+
+        winPanel.SetActive(true);
     }
 
     public void PlayerDeath()
