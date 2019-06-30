@@ -32,8 +32,10 @@ public class Line : MonoBehaviour
             return;
         }
 
-        if(Vector2.Distance(points.Last(), mousePosition) > minDistance)
+        float distance = Vector2.Distance(points.Last(), mousePosition);
+        if (distance > minDistance)
         {
+            ManageCapacity(distance);
             SetPoint(mousePosition);
         }
     }
@@ -49,8 +51,6 @@ public class Line : MonoBehaviour
         {
             ManageBoostDirection();
         }
-
-        ManageCapacity();
 
         if (points.Count > 1)
         {
@@ -74,7 +74,7 @@ public class Line : MonoBehaviour
 
     }
 
-    private void ManageCapacity()
+    private void ManageCapacity(float amount)
     {
         lineManager = FindObjectOfType<LineManager>();
 
@@ -84,7 +84,7 @@ public class Line : MonoBehaviour
         }
         else
         {
-            lineManager.RemoveCapacity();
+            lineManager.RemoveCapacity(amount);
         }
     }
 

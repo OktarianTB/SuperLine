@@ -7,12 +7,15 @@ public class GameManager : MonoBehaviour
 {
     public GameObject pausePanel;
     public GameObject winPanel;
+    public AudioClip levelFinished;
+
     public bool playerHasWon = false;
     public int numberOfStars;
 
     bool gameIsPaused = false;
     float timeToReset = 1.2f;
     float timeToLoadPanel = 1f;
+    float volume = 0.7f;
 
     GameObject pausePanelInstance;
     LevelManager levelManager;
@@ -66,7 +69,7 @@ public class GameManager : MonoBehaviour
     IEnumerator LoadWinPanel()
     {
         yield return new WaitForSeconds(timeToLoadPanel);
-
+        AudioSource.PlayClipAtPoint(levelFinished, transform.position, volume);
         winPanel.SetActive(true);
     }
 

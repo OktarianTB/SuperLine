@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -16,16 +17,19 @@ public class LineManager : MonoBehaviour
 
     public float normalLineMaxCapacity = 150f;
     public float boostLineMaxCapacity = 50f;
-    float normalLineCapacity;
-    float boostLineCapacity;
+    public float normalLineCapacity;
+    public float boostLineCapacity;
+    float amountRemoved = 0;
 
     bool currentlyDrawingALine = false;
     bool canUseNormalLine = true;
     bool canUseBoostLine = true;
+
     float halfHeight;
     float halfWidth;
 
     List<GameObject> lines;
+    List<float> lineDistances;
     Line activeLine;
     Player player;
 
@@ -35,6 +39,7 @@ public class LineManager : MonoBehaviour
         halfWidth = halfHeight * Camera.main.aspect;
 
         lines = new List<GameObject>();
+        lineDistances = new List<float>();
 
         normalLineCapacity = normalLineMaxCapacity;
         boostLineCapacity = boostLineMaxCapacity;
@@ -103,6 +108,9 @@ public class LineManager : MonoBehaviour
 
     private void StopDrawing()
     {
+        lineDistances.Add(amountRemoved);
+        amountRemoved = 0;
+
         activeLine = null;
         currentlyDrawingALine = false;
     }
@@ -139,23 +147,29 @@ public class LineManager : MonoBehaviour
         
     }
 
-    public void RemoveCapacity()
+    public void RemoveCapacity(float amount)
     {
         if (isNormalLine)
         {
-            normalLineCapacity = Mathf.Clamp(normalLineCapacity - 1, 0, normalLineMaxCapacity);
+            normalLineCapacity = normalLineCapacity - amount;
+            amountRemoved += amount;
+
             if(normalLineCapacity <= 0)
             {
                 canUseNormalLine = false;
+                normalLineCapacity = 0;
                 StopDrawing();
             }
         }
         else
         {
-            boostLineCapacity = Mathf.Clamp(boostLineCapacity - 1, 0, boostLineMaxCapacity);
-            if(boostLineCapacity <= 0)
+            boostLineCapacity = boostLineCapacity - amount;
+            amountRemoved += amount;
+
+            if (boostLineCapacity <= 0)
             {
                 canUseBoostLine = false;
+                boostLineCapacity = 0;
                 StopDrawing();
             }
         }
@@ -167,13 +181,17 @@ public class LineManager : MonoBehaviour
 
         if(lineComponent.lineType == Line.LineType.Normal)
         {
-            normalLineCapacity += lineComponent.lineRenderer.positionCount;
+            normalLineCapacity += lineDistances[lineDistances.Count - 1];
+            lineDistances.Remove(lineDistances.Last());
+
             normalLineCapacity = Mathf.Clamp(normalLineCapacity, 0, normalLineMaxCapacity);
             canUseNormalLine = true;
         }
         else if(lineComponent.lineType == Line.LineType.Boost)
         {
-            boostLineCapacity += lineComponent.lineRenderer.positionCount;
+            boostLineCapacity += lineDistances[lineDistances.Count - 1];
+            lineDistances.Remove(lineDistances.Last());
+
             boostLineCapacity = Mathf.Clamp(boostLineCapacity, 0, boostLineMaxCapacity);
             canUseBoostLine = true;
         }
@@ -181,11 +199,25 @@ public class LineManager : MonoBehaviour
 
     private void UpdateCapacityText()
     {
-        float normalLinePercentage = Mathf.Round(normalLineCapacity / normalLineMaxCapacity * 100);
-        float boostLinePercentage = Mathf.Round(boostLineCapacity / boostLineMaxCapacity * 100);
+        if(normalLineCapacity == 0)
+        {
+            normalLineCapacityText.text = "0%";
+        }
+        else
+        {
+            float normalLinePercentage = Mathf.Round(normalLineCapacity / normalLineMaxCapacity * 100);
+            normalLineCapacityText.text = normalLinePercentage + "%";
+        }
 
-        normalLineCapacityText.text = normalLinePercentage + "%";
-        boostLineCapacityText.text = boostLinePercentage + "%";
+        if (boostLineCapacity == 0)
+        {
+            boostLineCapacityText.text = "0%";
+        }
+        else
+        {
+            float boostLinePercentage = Mathf.Round(boostLineCapacity / boostLineMaxCapacity * 100);
+            boostLineCapacityText.text = boostLinePercentage + "%";
+        }
     }
 
 }

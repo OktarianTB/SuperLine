@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class Star : MonoBehaviour
 {
-
+    public AudioClip success;
     public GameObject starBurst;
+    public float volume = 0.7f;
 
     GameManager gameManager;
 
@@ -27,7 +28,10 @@ public class Star : MonoBehaviour
     {
         gameManager.numberOfStars--;
         gameManager.ManageVictory();
+        
         Instantiate(starBurst, transform.position, Quaternion.identity);
+        AudioSource.PlayClipAtPoint(success, transform.position, volume);
+
         Destroy(gameObject);
     }
 
