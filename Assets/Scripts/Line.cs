@@ -10,7 +10,15 @@ public class Line : MonoBehaviour
     public LineRenderer lineRenderer;
     public EdgeCollider2D edgeCollider;
 
+    public LineType lineType = LineType.Normal;
+    public enum LineType
+    {
+        Normal,
+        Boost
+    }
+
     List<Vector2> points;
+    LineManager lineManager;
 
     public void UpdateLine(Vector2 mousePosition)
     {
@@ -25,7 +33,6 @@ public class Line : MonoBehaviour
         {
             SetPoint(mousePosition);
         }
-
     }
 
     private void SetPoint(Vector2 point)
@@ -35,12 +42,27 @@ public class Line : MonoBehaviour
         lineRenderer.positionCount = points.Count;
         lineRenderer.SetPosition(points.Count - 1, point);
 
-        if(points.Count > 1)
+        ManageCapacity();
+
+        if (points.Count > 1)
         {
             edgeCollider.points = points.ToArray();
         }
 
     }
 
+    private void ManageCapacity()
+    {
+        lineManager = FindObjectOfType<LineManager>();
+
+        if (!lineManager)
+        {
+            Debug.LogWarning("Line Manager can't be found by Line Selector");
+        }
+        else
+        {
+            lineManager.RemoveCapacity();
+        }
+    }
 
 }

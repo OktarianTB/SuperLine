@@ -26,6 +26,7 @@ public class Star : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         gameManager.numberOfStars--;
+        gameManager.ManageVictory();
         Instantiate(starBurst, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }

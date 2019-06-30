@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class LineManager : MonoBehaviour
 {
@@ -10,7 +11,17 @@ public class LineManager : MonoBehaviour
     public GameObject boostLinePrefab;
     public bool isNormalLine = true;
 
+    public TextMeshProUGUI normalLineCapacityText;
+    public TextMeshProUGUI boostLineCapacityText;
+
+    public float normalLineMaxCapacity = 150f;
+    public float boostLineMaxCapacity = 50f;
+    float normalLineCapacity;
+    float boostLineCapacity;
+
     bool currentlyDrawingALine = false;
+    bool canUseNormalLine = true;
+    bool canUseBoostLine = true;
     float halfHeight;
     float halfWidth;
 
@@ -24,6 +35,9 @@ public class LineManager : MonoBehaviour
         halfWidth = halfHeight * Camera.main.aspect;
 
         lines = new List<GameObject>();
+
+        normalLineCapacity = normalLineMaxCapacity;
+        boostLineCapacity = boostLineMaxCapacity;
 
         player = FindObjectOfType<Player>();
         if (!player)
@@ -44,13 +58,19 @@ public class LineManager : MonoBehaviour
         {
             StopDrawing();
         }
+
+        UpdateCapacityText();
     }
 
     private void ManageInput(Vector2 position)
     {
         if (Input.GetMouseButtonDown(0) && !currentlyDrawingALine)
         {
-            StartDrawing();
+            if (isNormalLine && canUseNormalLine || !isNormalLine && canUseBoostLine)
+            {
+                StartDrawing();
+            }
+                
         }
 
         if (Input.GetMouseButtonUp(0) && currentlyDrawingALine)
@@ -73,6 +93,7 @@ public class LineManager : MonoBehaviour
     private void StartDrawing()
     {
         GameObject linePrefab = isNormalLine ? normalLinePrefab : boostLinePrefab;
+
         GameObject line = Instantiate(linePrefab);
         lines.Add(line);
 
@@ -110,9 +131,61 @@ public class LineManager : MonoBehaviour
         }
 
         GameObject lineToBeRemoved = lines[lines.Count - 1];
+
+        AddToCapacity(lineToBeRemoved);
+
         lines.Remove(lineToBeRemoved);
         Destroy(lineToBeRemoved);
         
+    }
+
+    public void RemoveCapacity()
+    {
+        if (isNormalLine)
+        {
+            normalLineCapacity = Mathf.Clamp(normalLineCapacity - 1, 0, normalLineMaxCapacity);
+            if(normalLineCapacity <= 0)
+            {
+                canUseNormalLine = false;
+                StopDrawing();
+            }
+        }
+        else
+        {
+            boostLineCapacity = Mathf.Clamp(boostLineCapacity - 1, 0, boostLineMaxCapacity);
+            if(boostLineCapacity <= 0)
+            {
+                canUseBoostLine = false;
+                StopDrawing();
+            }
+        }
+    }
+
+    private void AddToCapacity(GameObject lineToBeRemoved) // Restores the line drawing capacity of the removed line
+    {
+        Line lineComponent = lineToBeRemoved.GetComponent<Line>();
+
+        if(lineComponent.lineType == Line.LineType.Normal)
+        {
+            normalLineCapacity += lineComponent.lineRenderer.positionCount;
+            normalLineCapacity = Mathf.Clamp(normalLineCapacity, 0, normalLineMaxCapacity);
+            canUseNormalLine = true;
+        }
+        else if(lineComponent.lineType == Line.LineType.Boost)
+        {
+            boostLineCapacity += lineComponent.lineRenderer.positionCount;
+            boostLineCapacity = Mathf.Clamp(boostLineCapacity, 0, boostLineMaxCapacity);
+            canUseBoostLine = true;
+        }
+    }
+
+    private void UpdateCapacityText()
+    {
+        float normalLinePercentage = Mathf.Round(normalLineCapacity / normalLineMaxCapacity * 100);
+        float boostLinePercentage = Mathf.Round(boostLineCapacity / boostLineMaxCapacity * 100);
+
+        normalLineCapacityText.text = normalLinePercentage + "%";
+        boostLineCapacityText.text = boostLinePercentage + "%";
     }
 
 }

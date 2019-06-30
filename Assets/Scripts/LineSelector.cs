@@ -10,6 +10,11 @@ public class LineSelector : MonoBehaviour
     private void Start()
     {
         lineManager = FindObjectOfType<LineManager>();
+
+        if (!lineManager)
+        {
+            Debug.LogWarning("Line Manager can't be found by Line Selector");
+        }
     }
 
     public void SelectBoostLine()

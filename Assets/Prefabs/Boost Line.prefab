@@ -11,11 +11,11 @@ GameObject:
   - component: {fileID: 4650173479525686061}
   - component: {fileID: 7568097066610017012}
   - component: {fileID: 4979784171931508655}
-  - component: {fileID: 5873373352878961108}
   - component: {fileID: 3584472906508316869}
+  - component: {fileID: 5873373352878961108}
   m_Layer: 0
   m_Name: Boost Line
-  m_TagString: Untagged
+  m_TagString: Boost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -147,20 +147,6 @@ EdgeCollider2D:
   m_Points:
   - {x: -0.04000002, y: 0}
   - {x: 1.04, y: 0}
---- !u!114 &5873373352878961108
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7330560651387791029}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa358e49ef01905439eb2116890773e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 7568097066610017012}
-  edgeCollider: {fileID: 4979784171931508655}
 --- !u!252 &3584472906508316869
 SurfaceEffector2D:
   m_ObjectHideFlags: 0
@@ -179,3 +165,18 @@ SurfaceEffector2D:
   m_UseContactForce: 0
   m_UseFriction: 1
   m_UseBounce: 1
+--- !u!114 &5873373352878961108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7330560651387791029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa358e49ef01905439eb2116890773e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineRenderer: {fileID: 7568097066610017012}
+  edgeCollider: {fileID: 4979784171931508655}
+  lineType: 1
