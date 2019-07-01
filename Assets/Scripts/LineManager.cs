@@ -10,7 +10,7 @@ public class LineManager : MonoBehaviour
 
     public GameObject normalLinePrefab;
     public GameObject boostLinePrefab;
-    public bool isNormalLine = true;
+    public bool isNormalLine = true; // If it's not a normal line, then it's a boost line
 
     public TextMeshProUGUI normalLineCapacityText;
     public TextMeshProUGUI boostLineCapacityText;
@@ -115,7 +115,7 @@ public class LineManager : MonoBehaviour
         currentlyDrawingALine = false;
     }
 
-    bool IsValidMousePosition(Vector2 position)
+    bool IsValidMousePosition(Vector2 position) // Checks if the mouse is within the playable screen area
     {
         if(position.y >= halfHeight - 1.3f || position.y <= - halfHeight + 0.5f)
         {
@@ -131,7 +131,7 @@ public class LineManager : MonoBehaviour
         }
     }
 
-    public void RemoveLastLine()
+    public void RemoveLastLine() // Similar to Ctrl + Z
     {
         if(lines.Count < 1 || player.gameHasStarted)
         {
@@ -147,11 +147,11 @@ public class LineManager : MonoBehaviour
         
     }
 
-    public void RemoveCapacity(float amount)
+    public void RemoveCapacity(float amount) // Removes capacity based on the distance of the line 
     {
         if (isNormalLine)
         {
-            normalLineCapacity = normalLineCapacity - amount;
+            normalLineCapacity -= amount;
             amountRemoved += amount;
 
             if(normalLineCapacity <= 0)
@@ -163,7 +163,7 @@ public class LineManager : MonoBehaviour
         }
         else
         {
-            boostLineCapacity = boostLineCapacity - amount;
+            boostLineCapacity -= amount;
             amountRemoved += amount;
 
             if (boostLineCapacity <= 0)
